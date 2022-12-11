@@ -1,45 +1,38 @@
-// 일반 리덕스 예시 코드
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 
-// Action Value
-const ADD_NUMBER = "ADD_NUMBER";
-const MINUS_NUMBER = "MINUS_NUMBER";
-
-// Action Creator
-export const addNumber = (payload) => {
-  return {
-    type: ADD_NUMBER,
-    payload,
-  };
-};
-
-export const minusNumber = (payload) => {
-  return {
-    type: MINUS_NUMBER,
-    payload,
-  };
-};
-
-// Initial State
 const initialState = {
   number: 0,
 };
 
-// Reducer
-const counter = (state = initialState, action) => {
-  switch (action.type) {
-    case ADD_NUMBER:
-      return {
-        number: state.number + action.payload,
-      };
-    // [퀴즈 답]
-    case MINUS_NUMBER:
-      return {
-        number: state.number - action.payload,
-      };
-    default:
-      return state;
+export const __addNumber = createAsyncThunk(
+  "counter/__addNumber",
+  (args, thunkAPI) => {
+    setTimeout(() => {
+      thunkAPI.dispatch(addNumber(args));
+    }, 3000);
   }
-};
+);
 
-// export default reducer
-export default counter;
+export const userSlice = createSlice({
+  name: "counter",
+  initialState,
+  reducers: {
+    addNumber: (state, action) => {
+      state.number = state.number + action.payload;
+    },
+
+    minusNumber: (state, action) => {
+      state.number = state.number - action.payload;
+    },
+  },
+  extraReducers: {
+    // [__addNumber.fulfilled]: (state, action) => {
+    //   console.log(action);
+    //   state.number = state.number + +action.payload;
+    // },
+  },
+});
+
+// Action creators are generated for each case reducer function
+export const { addNumber, minusNumber } = userSlice.actions;
+export default userSlice.reducer;
